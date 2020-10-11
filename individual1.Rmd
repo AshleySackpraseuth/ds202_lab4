@@ -1,0 +1,132 @@
+---
+title: "Lab 4 - Individual 1"
+author: "Ashley Sackpraseuth"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading Data
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+defense <- read_excel('/Users/asack/OneDrive/Documents/ds202_lab4/cyclonesFootball2019.xlsx', sheet='Defensive')
+str(defense)
+
+offense <- read_excel('/Users/asack/OneDrive/Documents/ds202_lab4/cyclonesFootball2019.xlsx', sheet='Offensive')
+str(offense)
+
+biography <- read_excel('/Users/asack/OneDrive/Documents/ds202_lab4/cyclonesFootball2019.xlsx', sheet='Biography')
+str(biography)
+```
+
+## Part one: Cleaning data
+The player names and opponent names are factors.
+All offensive and defensive statistics are numerical. The Weight column in biogrpahy is also numeric. (Optional: Learn to mutate multiple columns systematically using the ?across function in `dplyr)
+Change the Height column in biogrpahy into numeric. (Hint: Use a unit that works well)
+```{r}
+defClean <- defense %>%
+              mutate(across(c("Name", "Opponent_Opponent"), as.factor)) %>%
+              mutate_if(is.character, as.numeric, na.rm = TRUE)
+str(defClean)
+  
+  
+
+offClean <- offense %>%
+              mutate(across(c("Name", "Opponent_Opponent"), as.factor)) %>%
+              mutate_if(is.character, as.numeric, na.rm = TRUE)
+str(offClean)
+
+  
+
+bioClean <- biography %>%
+              mutate(Name = as.factor(Name)) %>%
+              mutate(Height = gsub("-", ".", Height)) %>% #Height is converted to ft.in
+              mutate(across(c("Weight", "Height"), as.numeric))
+str(bioClean)
+
+```
+
+
+## Part two: Tidying
+
+1.Reformat the `defClean` data frame into a tidy format using `pivot_longer`. The type of statistic (Tackles_Solo, Tackles_ASST, etc) is added as a new key column named `stat`.
+
+```{r}
+defClean <- defClean %>%
+              pivot_longer(Tackles_Solo:Pass_PB, names_to = 'stat', values_to='score')
+
+print(defClean)
+```
+
+
+2. Compare the distributions of the defensive statistics. What defensive skills are rare?
+
+```{r}
+ggplot(defClean, aes(x = score)) + geom_histogram() + facet_wrap(~stat, scales = 'free_y')
+```
+  
+  Turnovers (Turnover_FF, Turnover_FR, Turnover_INT) and Tackles_Sack are rare defensive skills. 
+
+3. Did ISU have better defense against Iowa or Notre Dame? Answer this question by creating a scatterplot with x- and y-axes being the number of solo tackles (of each player). A large number of solo tackles is an indicator of good defense.
+
+
+```{r}
+#x-axis solo tackles against Iowa State
+#y-axis solo tackles against West Virginia
+
+soloPerGame <- defClean %>% 
+                group_by(Opponent_Opponent) %>%
+                summarize(solo = sum(Tackles_Solo)) 
+
+
+soloPerGame %>% 
+  filter(Opponent_Opponent == 'Iowa' | Opponent_Opponent == 'West Virginia') %>%
+  pivot_wider(names_from = 'stat', values_from = 'score') %>%
+  ggplot(aes(x='Iowa', y = 'West Virginia')) geom_point() + facet_wrap(~Name)
+```
+
+
+4. Separate the `Hometown` column into two columns, namely the city and the state. Print the first few rows of these two columns. (Hint: look at the sep= argument of separate)
+
+```{r}
+bioClean %>% 
+  separate(Hometown, into = c("City", "State"), sep = ",")
+```
+
+5. How many players are there from each state?
+
+```{r}
+bioClean %>%
+  separate(Hometown, into = c("City", "State"), sep = ",") %>%
+  group_by(State) %>%
+  summarize(numPlayers = count(Name))
+```
+
+
+## Part three: Joining data frames
+
+1. Find which states do the ISU defensive and offensive players come from. Create an appropriate summary.
+
+```{r}
+
+```
+
+2. How does the performance of quarterback Brock Purdy relate to the performance of the ISU team?
+
+```{r}
+
+```
+
+
+3. Which ISU player(s) made big progress over the last year? 
+
+
+```{r}
+
+```
