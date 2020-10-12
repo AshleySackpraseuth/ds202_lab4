@@ -69,7 +69,7 @@ print(defClean)
 2. Compare the distributions of the defensive statistics. What defensive skills are rare?
 
 ```{r}
-ggplot(defClean, aes(x = score)) + geom_histogram() + facet_wrap(~stat, scales = 'free_y')
+ggplot(defClean, aes(x = score)) + geom_histogram() + facet_wrap(~stat, scales = 'free_y') + ggtitle("Defense Statistics Distribution") + xlab("Score") + ylab("Count")
 ```
   
   Turnovers (Turnover_FF, Turnover_FR, Turnover_INT) and Tackles_Sack are rare defensive skills. 
@@ -82,7 +82,7 @@ soloTackles <- defClean %>%
                filter(Opponent_Opponent == 'Iowa' | Opponent_Opponent == 'Notre Dame', stat == 'Tackles_Solo') %>%
     pivot_wider(names_from = Opponent_Opponent, values_from= score)
 
-ggplot(soloTackles, aes(x=Iowa, y=`Notre Dame`)) + geom_point() + xlab('Solo tackles in Iowa game') + ylab('Solo tackles in Notre Dame game')
+ggplot(soloTackles, aes(x=Iowa, y=`Notre Dame`)) + geom_point() + xlab('Solo tackles in Iowa game') + ylab('Solo tackles in Notre Dame game') + ggtitle("Notre Dame vs. Iowa Solo Tackles")
 
 ```
 
