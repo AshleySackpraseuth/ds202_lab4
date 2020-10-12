@@ -1,6 +1,6 @@
 ---
-title: "Lab 4 - Individual 1"
-author: "Ashley Sackpraseuth"
+title: "Lab 4 - Team"
+author: "Ashley Sackpraseuth, Adam Ford"
 date: "10/11/2020"
 output: html_document
 ---
@@ -206,10 +206,6 @@ offCleanWide19 <- offCleanWide19 %>%
   group_by(Name) %>%
   select(-Opponent_Opponent) %>%
   summarize_all(list(mean), na.rm=TRUE) 
-
-offCleanWide18
-
-offCleanWide19
 
 colnames(offCleanWide18) <- paste("Last", colnames(offCleanWide18), sep = "_")
 colnames(offCleanWide19) <- paste("This", colnames(offCleanWide19), sep = "_")

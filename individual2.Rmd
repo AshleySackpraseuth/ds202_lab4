@@ -1,6 +1,6 @@
 ---
-title: "Lab 4 - Individual 1"
-author: "Ashley Sackpraseuth"
+title: "Lab 4 - Individual 2"
+author: "Adam Ford"
 date: "10/11/2020"
 output: html_document
 ---
